@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Announcement Page - Edit</title>
+  <style>
+
+     * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+        body {
+      font-family: Arial, sans-serif;
+      background-image: url('bg1.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+     
+    #myHeader {
+background-color:#ffd633;
+color:#ffffff;
+padding: 30px;
+width: 100%;
+margin-top: 20px;
+Text-align:Center;
+border-radius: 10px;
+ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+    #login-form {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #login-form input[type="text"],
+    #login-form input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    #login-form input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #announcement-form {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #announcement-form input[type="text"],
+    #announcement-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    #announcement-form input[type="file"] {
+      margin-bottom: 10px;
+    }
+    #announcement-form input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .announcement {
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .announcement img {
+      max-width: 50 px;
+      height: 50px;
+    }
+    .announcement h2 {
+      margin-top: 0;
+    }
+    .announcement p {
+      margin-bottom: 0;
+    }
+    .announcement .delete {
+      text-align: right;
+    }
+    .delete button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+      border-radius: 3px;
+      cursor: pointer;
+}
+
+      .links {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 20px;
+      margin-top: 10px;
+
+    }
+
+    .links a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 10px;
+
+    }
+ 
+    }
+  </style>
+</head>
+<body>
+  <h1 id="myHeader">Announcement Edit</h1>
+   <div class="links">
+    <a href="index.html">Home</a>
+    <a href="edit.html">Edit</a>
+  </div>
+  
+  <br>
+  <br>
+  <br>
+  <div id="login-form">
+    <h2>Login</h2>
+    <form onsubmit="authenticate(event)">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <input type="submit" value="Login">
+    </form>
+  </div>
+  <div id="announcement-form" style="display: none;">
+    <h2>Create Announcement</h2>
+    <form onsubmit="createAnnouncement(event)">
+      <input type="text" id="announcement-title" placeholder="Title" required>
+      <input type="file" id="announcement-image" accept=".jpg, .jpeg, .png, .mov" required>
+      <textarea id="announcement-description" placeholder="Description" required></textarea>
+      <input type="submit" value="Create Announcement">
+    </form>
+  </div>
+  <div id="announcements"></div>
+
+  <script>
+    // Retrieve announcements from localStorage
+    let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
+    let authenticated = false;
+
+    // Function to save announcements to localStorage
+    function saveAnnouncements() {
+      localStorage.setItem("announcements", JSON.stringify(announcements));
+    }
+
+    // Function to create a new announcement
+    function createAnnouncement(event) {
+      event.preventDefault();
+      const title = document.getElementById("announcement-title").value;
+      const imageInput = document.getElementById("announcement-image");
+      const description = document.getElementById("announcement-description").value;
+
+      // Check if an image is selected
+      if (imageInput.files.length > 0) {
+        const imageFile = imageInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function() {
+          const image = reader.result;
+          const announcement = {
+            title: title,
+            image: image,
+            description: description
+          };
+          announcements.push(announcement);
+          displayAnnouncements();
+          saveAnnouncements();
+          event.target.reset();
+        };
+        reader.readAsDataURL(imageFile);
+      }
+    }
+
+    // Function to delete an announcement
+    function deleteAnnouncement(index) {
+      announcements.splice(index, 1);
+      displayAnnouncements();
+      saveAnnouncements();
+    }
+
+    // Function to display announcements
+    function displayAnnouncements() {
+      const announcementsDiv = document.getElementById("announcements");
+      announcementsDiv.innerHTML = "";
+      announcements.forEach((announcement, index) => {
+        const announcementDiv = document.createElement("div");
+        announcementDiv.classList.add("announcement");
+        announcementDiv.innerHTML = `
+          <h2>${announcement.title}</h2>
+          <img src="${announcement.image}" alt="${announcement.title}">
+          <p>${announcement.description}</p>
+          <div class="delete">
+            <button onclick="deleteAnnouncement(${index})">Delete</button>
+          </div>
+        `;
+        announcementsDiv.appendChild(announcementDiv);
+      });
+    }
+
+    // Function to authenticate the user
+    function authenticate(event) {
+      event.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      // Replace with your authentication logic
+      if (username === "admin" && password === "password") {
+        authenticated = true;
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("announcement-form").style.display = "block";
+      } else {
+        alert("Invalid username or password. Please try again.");
+      }
+    }
+  </script>
+</body>
+</html>

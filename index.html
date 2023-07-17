@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Announcement Page - Home</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('bg1.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    
+    #myHeader {
+background-color:#ffd633;
+color:#ffffff;
+padding: 30px;
+width: 100%;
+margin-top: 20px;
+Text-align:Center;
+border-radius: 10px;
+ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      margin-top: 100px;
+    }
+
+    .announcement {
+      width: 325px;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      background-color: #f4f4f4;
+      overflow: hidden;
+      transition: transform;
+    }
+
+    .announcement img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .announcement h2 {
+      font-size: 24px;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .announcement p {
+      font-size: 15px;
+      color: #666;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .links {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 20px;
+      margin-top: 10px;
+    }
+
+    .links a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="myHeader">Announcement Home</h1>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="edit.html">Edit</a>
+  </div>
+
+  <div class="container" id="announcements"></div>
+
+  <script>
+    // Function to display announcements
+    function displayAnnouncements(announcements) {
+      const announcementsDiv = document.getElementById("announcements");
+      announcementsDiv.innerHTML = "";
+      announcements.forEach((announcement) => {
+        const announcementDiv = document.createElement("div");
+        announcementDiv.classList.add("announcement");
+        announcementDiv.innerHTML = `
+          <h2>${announcement.title}</h2>
+          <img src="${announcement.image}" alt="${announcement.title}">
+          <p>${announcement.description}</p>
+        `;
+        announcementsDiv.appendChild(announcementDiv);
+      });
+    }
+
+    // Retrieve announcements from localStorage
+    const storedAnnouncements = localStorage.getItem("announcements");
+    if (storedAnnouncements) {
+      const announcements = JSON.parse(storedAnnouncements);
+      displayAnnouncements(announcements);
+    }
+  </script>
+</body>
+</html>
